@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH(원격 접속)로 EC2에 접속하기 3
+      - name: SSH(원격 접속)로 EC2에 접속하기 4
         uses: appleboy/ssh-action@v1.0.3
         env:
           APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
