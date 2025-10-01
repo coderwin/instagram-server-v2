@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class InstagramServerApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void contextLoads() throws IllegalAccessException {
+        throw new IllegalAccessException("test 실패");
 	}
 
 }
