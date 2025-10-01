@@ -20,6 +20,7 @@ jobs:
           script: |
             cd /home/ubuntu/instagram-server
             git pull origin main
+            chmod +x gradlew
             ./gradlew clean build
-            nohup java -jar .build/libs/*SNAPSHOT.jar > ./nohup2.log 2>&1 &
+            nohup java -jar ./build/libs/*SNAPSHOT.jar > ./nohup2.log 2>&1 &
             
