@@ -8,7 +8,7 @@ public class InitApiController {
 
     @GetMapping("/")
     public String init() {
-        return "Hello World";
+        return "Hi World";
     }
 
 }
