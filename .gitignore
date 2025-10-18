@@ -40,3 +40,4 @@ application.yml
 
 ## .github folder
 deploy.yml
+deploy-v2.yml
