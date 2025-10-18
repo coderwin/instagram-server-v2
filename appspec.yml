@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ubuntu/instagram-server
+    destination: /home/ubuntu/instagram-server-v2
 
 permissions:
   - object: /
