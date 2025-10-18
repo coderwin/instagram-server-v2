@@ -9,6 +9,7 @@ class InstagramServerApplicationTests {
 	@Test
 	void contextLoads() throws IllegalAccessException {
 //        throw new IllegalAccessException("test 실패");
+        boolean test = true;
 	}
 
 }
