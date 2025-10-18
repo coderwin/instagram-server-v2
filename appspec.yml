@@ -1,9 +1,9 @@
-version: 0.8
+version: 0.0
 os: linux
 
 files:
   - source: /
-    destination: /home/ubuntu/instagram-server-v2
+    destination: /home/ubuntu/instagram-server
 
 permissions:
   - object: /
