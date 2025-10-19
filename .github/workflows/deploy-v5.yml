@@ -1,0 +1,83 @@
+name: Deploy To EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      ## github action
+      - name: Github Repository 불러오기
+        uses: actions/checkout@v4
+
+      - name: jdk 17 설치하기
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: application.yml 파일 만들기
+        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
+
+      - name: application.yml 파일 확인하기
+        run: |
+          ls ./src/main/resources
+          cat ./src/main/resources/application.yml
+
+      - name: 테스트 및 build 하기
+        run: |
+          sudo chmod 500 ./gradlew
+          ./gradlew clean build
+
+      ## aws 리소스에 접근할 수 있게 인증하기(credentials)
+      - name: aws 리소스에 접근할 수 있게 인증하기(AWS credentilas 설정)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      ## ECR 로그인 하기
+      - name: ECR 로그인 하기
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      ## github action에서 도커 이미지 생성하기
+      - name: 배포 위한 도커 이미지 생성하기 - 이미지명은 ECR URL 명을 사용해야 한다.
+        run: docker build -t instagram-server .
+
+      - name: Docker 이미지에 TAG 붙이기 (ECR 저장소 === url과 같도록 tag 만들기)
+        run: docker tag instagram-server ${{ steps.login-ecr.outputs.registry }}/instagram-server:latest
+
+      ## github action -> ECR 명령 : 도커 이미지 보관하기(ECR에 도커이미지 Push 하기)
+      - name: Elastic Container Regestry(ECR)에 도커 이미지 보관하기
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/inatagram-server:latest
+
+      ## github action -> s3 appspec.yml, scripts 폴더 tar.gz로 저장하기(업로드하기)
+      - name: tar.gz 파일 생성하기
+        run: tar -czvf ./$GITHUB_SHA.tar.gz appspec.yml scripts
+
+      - name: s3에 appspec.yml, scripts 폴더 tar.gz파일로 저장하기(압축하기)
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://instagram-server-bucket/$GITHUB_SHA.tar.gz
+
+      ## github action -> codeDeploy 명령
+      - name: codeDeploy에 배포 생성(create deploy) 명령하기(CodeDeploy를 활용해 EC2에 프로젝트 코들르 배포하라고 명령하기)
+        run: aws deploy create-deployment
+            --application-name instagram-server
+            --deployment-config-name CodeDeployDefault.AllAtOnce
+            --deployment-group-name Production
+            --s3-location bucket=instagram-server-bucket,bundleType=tgz,key=$GTIHUB_SHA.tar.gz
+
+
+
+
+
+
+
+
+
+
