@@ -68,7 +68,6 @@ jobs:
       - name: s3에 appspec.yml, scripts 폴더 tar.gz파일로 저장하기(압축하기)
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://instagram-server-bucket-v2/$GITHUB_SHA.tar.gz
 
-
       ## github action -> codeDeploy 명령
       - name: codeDeploy에 배포 생성(create deploy) 명령하기(CodeDeploy를 활용해 EC2에 프로젝트 코드를 배포하라고 명령하기)
         run: aws deploy create-deployment
