@@ -5,7 +5,7 @@ echo "----------------배포 시작-------------------"
 # docker container 중지
 docker stop instagram-server || true
 # docker container 삭제
-docker rm instamgram-server || true
+docker rm instagram-server || true
 # docker image pull
 docker pull 776036137161.dkr.ecr.ap-northeast-2.amazonaws.com/instagram-server:latest
 # docker run
