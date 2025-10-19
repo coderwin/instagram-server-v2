@@ -8,7 +8,7 @@ public class InitApiController {
 
     @GetMapping("/")
     public String init() {
-        return "Beautiful, World";
+        return "docker, World";
     }
 
 }
